@@ -1,0 +1,79 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/05/CPU.hdl
+
+/**
+ * The Central Processing unit (CPU).
+ * Consists of an ALU and a set of registers, designed to fetch and 
+ * execute instructions written in the Hack machine language.
+ * In particular, functions as follows:
+ * Executes the inputted instruction according to the Hack machine 
+ * language specification. The D and A in the language specification
+ * refer to CPU-resident registers, while M refers to the external
+ * memory location addressed by A, i.e. to Memory[A]. The inM input 
+ * holds the value of this location. If the current instruction needs 
+ * to write a value to M, the value is placed in outM, the address 
+ * of the target location is placed in the addressM output, and the 
+ * writeM control bit is asserted. (When writeM=0, any value may 
+ * appear in outM). The outM and writeM outputs are combinational: 
+ * they are affected instantaneously by the execution of the current 
+ * instruction. The addressM and pc outputs are clocked: although they 
+ * are affected by the execution of the current instruction, they commit 
+ * to their new values only in the next time unit. If reset=1 then the 
+ * CPU jumps to address 0 (i.e. sets pc=0 in next time unit) rather 
+ * than to the address resulting from executing the current instruction. 
+ */
+
+CHIP CPU {
+
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current
+                         // program (reset=1) or continue executing
+                         // the current program (reset=0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write into M? 
+        addressM[15],    // Address in data memory (of M)
+        pc[15];          // address of next instruction
+
+    PARTS:
+    // Put your code here:
+	Mux16(a=instruction,b=outALU,sel=instruction[15],out=outMux1);
+	
+	//Register A
+	Not(in=instruction[15],out=notAnd);
+	Or(a=notAnd,b=instruction[5],out=outOr);
+	ARegister(in=outMux1,load=outOr,out=outA,out[0..14]=addressM);
+	
+	//D
+	And(a=instruction[15],b=instruction[4],out=loadD);
+	DRegister(in=outALU,load=loadD,out=outD);
+	
+	//Mux A&M
+	Mux16(a=outA,b=inM,sel=instruction[12],out=outAM);
+	
+	//ALU
+	ALU(x=outD,y=outAM,zx=instruction[11],nx=instruction[10],zy=instruction[9], 
+	ny=instruction[8], f=instruction[7], no=instruction[6],
+	out=outALU,out=outM,zr=zr,ng=ng);
+	
+	//Mux writeM
+	And(a=instruction[3],b=instruction[15],out=writeM);
+	
+	//PC
+	Not(in=zr,out=notzr);
+	Not(in=ng,out=notng);
+	And(a=notzr,b=notng,out=ps);
+	And(a=ng,b=instruction[2],out=and1);
+	And(a=zr,b=instruction[1],out=and2);
+	And(a=ps,b=instruction[0],out=and3);
+	Or(a=and1,b=and2,out=or1);
+	Or(a=or1,b=and3,out=or2);
+	
+	//禁止A指令时PC采取load行为
+	And(a=or2,b=instruction[15],out=outAnd3); 
+	PC(in=outAM,load=outAnd3,reset=reset,inc=true,out[0..14]=pc);
+	
+}
