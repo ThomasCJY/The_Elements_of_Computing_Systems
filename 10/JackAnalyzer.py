@@ -28,7 +28,8 @@ readfile.close()
 rfile=open('copyfile','r')
 wfile=open(filename.strip('.jack')+'.xml','w')
 
-CompilationEngine.compileClass(rfile,wfile)
+outputCompile=CompilationEngine.Compile(rfile,wfile)
+outputCompile.compileClass()
 
 rfile.close()
 wfile.close()
