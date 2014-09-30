@@ -10,19 +10,19 @@ class Math {
 
     /** Initializes the library. */
     function void init() {
-	return;
+		return;
     }
 
     /** Returns the absolute value of x. */
     function int abs(int x) {
-	var int absNum;
-	if (x < 0){
-		let absNum = -x;
-	}
-	else{
-		let absNum = x; 
-	}
-	return absNum;
+		var int absNum;
+		if (x < 0){
+			let absNum = -x;
+		}
+		else{
+			let absNum = x; 
+		}
+		return absNum;
     }
 
     /** Returns the product of x and y. */
@@ -36,19 +36,13 @@ class Math {
 		let functionY= Math.abs(y);
 		let flag=1;
 		let j=0;
-		let WhetherNeg=true;
-		if (x=0|y=0){
-		return 0;
+		if ((x=0)|(y=0)){
+			return 0;
 		}
-		if (x<0){
-		let WhetherNeg = ~WhetherNeg;
-		}
-		if (y<0){
-		let WhetherNeg = ~WhetherNeg;
-		}
+		let WhetherNeg = ((x<0)=(y<0));
 		while(j<16){
 			if(functionY&flag=flag){
-			let sum = sum + shiftedX;
+				let sum = sum + shiftedX;
 			}
 			let shiftedX=shiftedX+shiftedX;
 			let flag=flag+flag;
@@ -83,16 +77,10 @@ class Math {
 		var boolean WhetherNeg;
 		let absX = Math.abs(x);
 		let absY= Math.abs(y);
-		let WhetherNeg=true;
 		if(absY=0){
 			return Sys.error(3);
 		}
-		if (x<0){
-			let WhetherNeg = ~WhetherNeg;
-		}
-		if (y<0){
-			let WhetherNeg = ~WhetherNeg;
-		}
+		let WhetherNeg = ((x<0)=(y<0));
 		let answer = Math.div(absX, absY);
 		if (~WhetherNeg){
 			let answer=-answer;
@@ -102,75 +90,75 @@ class Math {
 
 	/** Returns to the exponent number n where x <= 2^n. */
 	function int logTwo(int x){
-	var int powerTwo,flag;
-	if ((x>16384)&((x<32767)|(x=32767))){
-		return 15;
-	}
-	let powerTwo = 1;
-	let flag = 0;
-	while (powerTwo<x){
-	let powerTwo = powerTwo+powerTwo;
-	let flag = flag + 1;
-	}
-	return flag;
+		var int powerTwo,flag;
+		if ((x>16384)&((x<32767)|(x=32767))){
+			return 15;
+		}
+		let powerTwo = 1;
+		let flag = 0;
+		while (powerTwo<x){
+			let powerTwo = powerTwo+powerTwo;
+			let flag = flag + 1;
+		}
+		return flag;
 	}
 	
 	/** Returns to x^y. */
 	function int power(int x, int y){
-	var int flag;
-	var int result;
-	let flag = y;
-	let result = 1;
-	if(y=0){
-	return 1;
-	}
-	while ( flag>0 ){
-	let result = Math.multiply(result,x);
-	let flag=flag-1;
-	}
-	return result; 
+		var int flag;
+		var int result;
+		let flag = y;
+		let result = 1;
+		if(y=0){
+			return 1;
+		}
+		while ( flag>0 ){
+			let result = Math.multiply(result,x);
+			let flag=flag-1;
+		}
+		return result; 
 	}	
 	
     /** Returns the integer part of the square root of x. */
     function int sqrt(int x) {
-	var int y,j,flag,powerJ;
-	var int n,halfN;
-	let y=0;
-	let n = Math.logTwo(x);
-	let halfN = Math.divide(n,2);
-	let j=halfN;
-	if (x<0){
-		return Sys.error(3);
-	}
-	while (j>-1){
-		let powerJ = Math.power(2,j);
-		let flag = y+powerJ;
-		let flag = Math.multiply(flag,flag);
-		if (((flag < x) | (flag = x)) & (flag > 0)){
-			let y = y + powerJ;
+		var int y,j,flag,powerJ;
+		var int n,halfN;
+		let y=0;
+		let n = Math.logTwo(x);
+		let halfN = Math.divide(n,2);
+		let j=halfN;
+		if (x<0){
+			return Sys.error(3);
 		}
-		let j=j-1;
+		while (j>-1){
+			let powerJ = Math.power(2,j);
+			let flag = y+powerJ;
+			let flag = Math.multiply(flag,flag);
+			if (((flag < x) | (flag = x)) & (flag > 0)){
+				let y = y + powerJ;
+			}
+			let j=j-1;
 		}
 		return y;
     }
 
     /** Returns the greater number. */
     function int max(int a, int b) {
-	if (a>b){
-	return a;
-	}
-	else{
-	return b;
-	}
+		if (a>b){
+			return a;
+		}
+		else{
+			return b;
+		}
     }
 
     /** Returns the smaller number. */
     function int min(int a, int b) {
-	if (a<b){
-	return a ;
-	}
-	else{
-	return b;
-	}
+		if (a<b){
+			return a ;
+		}
+		else{
+			return b;
+		}
     }
 }

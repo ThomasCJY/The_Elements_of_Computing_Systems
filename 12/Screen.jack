@@ -45,7 +45,7 @@ class Screen {
         let remain=x-Math.multiply(divNum,16);
         let temp=Memory.peek(address);
         while(remain>0){
-            let i=Math.multiply(i,2);
+            let i=i+i;
             let remain=remain-1;
         }
         //if color = false, negate the i to draw white pixel
@@ -62,46 +62,50 @@ class Screen {
 
     /** Draws a line from (x1, y1) to (x2, y2). */
     function void drawLine(int x1, int y1, int x2, int y2) {
-        var int a,b,dx,dy;
-        var int compDx,compDy;
-        var int adyMinusbdx;
-        var int varX1,varY1,varX2,varY2;
-        let a=0;
-        let b=0;
-        let varX1=x1;
-        let varY1=y1;
-        let varX2=x2;
-        let varY2=y2;
+        var int a,b,dx,dy,compDx,compDy,adyMinusbdx;
         let dx=x2-x1;
         let dy=y2-y1;
-        if((dx<1)&(dy<1)){
-            let varX1=x2;
-            let varY1=y2;
-            let varX2=x1;
-            let varY2=y1;
-        }
         let compDx=Math.abs(dx)+1;
         let compDy=Math.abs(dy)+1;
-        if (dx=0){
-            while(b<compDy){
-                do Screen.drawPixel(varX1,varY1+b);
-                let b=b+1;               
-            }
-            return;
-        }
+        let a=0;
+        let b=0;
         if (dy=0){
-            while(a<compDx){
-                do Screen.drawPixel(varX1+a,varY1);
-                let a=a+1;               
+            if(dx>0){
+                while(a<compDx){
+                    do Screen.drawPixel(x1+a,y1);
+                    let a=a+1;               
+                }
+                return;                
             }
-            return;
+            else{
+                while(a<compDx){
+                    do Screen.drawPixel(x1-a,y1);
+                    let a=a+1;               
+                }
+                return;  
+            }
         }
-        let dx=varX2-varX1;
-        let dy=varY2-varY1;
+        if (dx=0){
+            if(dy>0){
+                while(a<compDy){
+                    do Screen.drawPixel(x1,y1+a);
+                    let a=a+1;               
+                }
+                return;                
+            }
+            else{
+                while(a<compDy){
+                    do Screen.drawPixel(x1,y1-a);
+                    let a=a+1;               
+                }
+                return;  
+            }
+        }
+
         if((dx>0)&(dy>0)){
             let adyMinusbdx=0;
             while((a<compDx)&(b<compDy)){
-                do Screen.drawPixel(varX1+a,varY1+b);
+                do Screen.drawPixel(x1+a,y1+b);
                 if(adyMinusbdx<0){
                     let adyMinusbdx=adyMinusbdx+dy;
                     let a=a+1;
@@ -113,26 +117,54 @@ class Screen {
             }
             return;
         }
-        if(dx<0){
-            let varX1=x2;
-            let varY1=y2;
-            let varX2=x1;
-            let varY2=y1;            
+
+        if((dx<1)&(dy<1)){
+            let adyMinusbdx=0;
+            while((a<compDx)&(b<compDy)){
+                do Screen.drawPixel(x2+a,y2+b);
+                if(adyMinusbdx<0){
+                    let adyMinusbdx=adyMinusbdx-dy;
+                    let a=a+1;
+                }
+                else{
+                    let adyMinusbdx=adyMinusbdx+dx;
+                    let b=b+1;
+                }
+            }
+            return;
         }
-        let dx=varX2-varX1;
-        let dy=varY2-varY1;
-        let adyMinusbdx=0;
-        while((a<compDx)&(b<compDy)){
-            do Screen.drawPixel(varX1+a,varY1-b);
-            if(adyMinusbdx<0){
-                let adyMinusbdx=adyMinusbdx-dy;
-                let a=a+1;
+
+        if((dx>0)&(dy<1)){
+            let adyMinusbdx=0;
+            while((a<compDx)&(b<compDy)){
+                do Screen.drawPixel(x1+a,y1-b);
+                if(adyMinusbdx<0){
+                    let adyMinusbdx=adyMinusbdx-dy;
+                    let a=a+1;
+                }
+                else{
+                    let adyMinusbdx=adyMinusbdx-dx;
+                    let b=b+1;
+                }
             }
-            else{
-                let adyMinusbdx=adyMinusbdx-dx;
-                let b=b+1;
+            return;
+        }
+
+        if((dy>0)&(dx<1)){
+            let adyMinusbdx=0;
+            while((a<compDx)&(b<compDy)){
+                do Screen.drawPixel(x2+a,y2-b);
+                if(adyMinusbdx<0){
+                    let adyMinusbdx=adyMinusbdx+dy;
+                    let a=a+1;
+                }
+                else{
+                    let adyMinusbdx=adyMinusbdx+dx;
+                    let b=b+1;
+                }
             }
-        }     
+            return;
+        }
         return;
     }
 
