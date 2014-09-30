@@ -1,0 +1,67 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Memory.jack
+
+/**
+ * Memory operations library.
+ */ 
+class Memory {
+
+    static Array freelist; 
+
+    /** Initializes memory parameters. */
+    function void init() {
+        let freelist = 0;
+        let freelist[2048]=14334;
+        let freelist[2049]=2050;
+        return;
+    }
+
+    /** Returns the value of the main memory at the given address. */
+    function int peek(int address) {
+        return freelist[address];
+    }
+
+    /** Sets the value of the main memory at this address
+     *  to the given value. */
+    function void poke(int address, int value) {
+        let freelist[address] = value;
+        return;
+    }
+
+    /** finds and allocates from the heap a memory block of the 
+     *  specified size and returns a reference to its base address. */
+    function int alloc(int size) {
+        var int listRoom,listTag,tempAdd,returnVal;
+        var int minSize;
+        let minSize=size+3;
+        let listTag=2048;
+        let listRoom=Memory.peek(listTag);
+        while(minSize>listRoom){
+            let listTag=listTag+1;
+            let listTag=Memory.peek(listTag);
+            let listRoom=Memory.peek(listTag);
+            if(listTag=0) {
+                do Sys.error(7);
+            }
+        }
+        let returnVal=listTag+2;
+        do Memory.poke(listTag,0);
+        let listTag=listTag+1;
+        let tempAdd=Memory.peek(listTag)+size;
+        do Memory.poke(listTag,tempAdd);
+        do Memory.poke(tempAdd,listRoom-size-2);
+        let listTag=tempAdd+1;
+        do Memory.poke(listTag,listTag+1);          
+        return returnVal;
+    }
+
+    /** De-allocates the given object and frees its space. */
+    function void deAlloc(int object) {
+        var int length;
+        let length = Memory.peek(object+1)-object-2;
+        do Memory.poke(object,length);
+        return;
+    }    
+}
